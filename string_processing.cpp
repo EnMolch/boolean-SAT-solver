@@ -1,4 +1,3 @@
-#include "input_handler.h"
 #include "string_processing.h"
 //implement the methods of the string-class
 string_processing::string::string(char* address) : first_char(address){}
