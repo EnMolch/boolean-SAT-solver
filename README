@@ -1,0 +1,5 @@
+-------------------C++ Testat -------------------
+SAT - Sovler
+parse eingabe, lexen, gegebenenfalls vereinfachen und SAT berechen
+
+Ausgabe als wahrheitstabelle und einfache ausgabe im Falle des SAT
