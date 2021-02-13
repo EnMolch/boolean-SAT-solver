@@ -3,3 +3,9 @@ SAT - Sovler
 parse eingabe, lexen, gegebenenfalls vereinfachen und SAT berechen
 
 Ausgabe als wahrheitstabelle und einfache ausgabe im Falle des SAT
+
+Operatoren: 
+	!A	nicht A
+	A&B	A und B
+	A|B 	A oder B
+	()	Klammern
