@@ -1,13 +1,13 @@
 #include <cstddef>
 #include "string_processing.h"
 //implement the methods of the string-class
-string_processing::string::string(char* address) : first_char(address){}
+string_processing::string::string(const char* address) : first_char(address){}
 
 int string_processing::string::strlen()
 {
 	// iterate through the characters, counting up till a zero Byte
 	int len = 0;
-	char* iterator = this->first_char;
+	const char* iterator = this->first_char;
 	while (iterator[len] != 0)
 	{
 		len++;
@@ -15,7 +15,7 @@ int string_processing::string::strlen()
 	return len;
 }
 
-int string_processing::string::stringcompare(string &comp_str)
+int string_processing::string::stringcompare(string comp_str)
 {
 	// compare current string with comp_str and return 1 if they are equal, else return 0
 	int max_len = this->strlen();

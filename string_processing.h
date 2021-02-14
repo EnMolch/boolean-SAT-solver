@@ -7,16 +7,14 @@ namespace string_processing{
 class string{
 
 	private:
-		char* first_char; //pointer to the first character
+		const char* first_char; //pointer to the first character
 
 	public:
-		string(char* address);
-	        string(){first_char = NULL;}	
+		string(const char* address);
+	        string(){first_char = 0;}	
 
-		~string();
-		
 
-		int stringcompare(string &comp_str); //compare this to comp_str, return bool true/false
+		int stringcompare(string comp_str); //compare this to comp_str, return bool true/false
 
 		int strlen();	//return length of the current string object
 		
