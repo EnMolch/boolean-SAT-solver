@@ -5,11 +5,8 @@
 #include<stdio.h>
 int main(int argc, char* argv[])
 {
-	string_processing::string test(argv[1]);
-	int flag = test.stringcompare("test");
-	if (flag == 1)
-	{
-	 printf("%d",flag);
-	}
+	int a = string_processing::strlen(argv[0]);
+	a = string_processing::stringcompare("test" , "test");
+	printf("%d",a);
 	return 0;
 }
