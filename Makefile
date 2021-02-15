@@ -7,7 +7,7 @@ EXECUTABLES = main
 all : build
 
 build: $(OBJECTS)
-	g++ main.o string_processing.o -o main
+	g++ $(OBJECTS) -o main
 
 $(OBJECTS): $(SOURCES)
 	g++ $(SOURCES) -c
