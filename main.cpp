@@ -2,11 +2,22 @@
 // Here be code
 //
 #include "string_processing.h"
-#include<stdio.h>
+#include "input_handler.h"
+#include <stdio.h>
+
 int main(int argc, char* argv[])
 {
-	int a = string_processing::strlen(argv[0]);
-	a = string_processing::stringcompare("test" , "test");
-	printf("%d",a);
+	int status_code = get_inputs(argc, argv);
+	switch (status_code)
+	{
+		case NO_INPUT:
+			return 0;
+
+		case DIRECT_INPUT:
+			return 0;
+
+		case FILE_INPUT:
+			return 0;
+	}
 	return 0;
 }
