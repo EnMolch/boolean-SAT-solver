@@ -27,7 +27,11 @@ int get_inputs(int count, char** values)
 			return FILE_INPUT;
 		}
 
-		return DIRECT_INPUT;
+		else if(count == 2) //return the direct input only if there is 1 parameter
+		{
+			return DIRECT_INPUT;
+		}
+		return NO_INPUT;
 	}
 }
 
