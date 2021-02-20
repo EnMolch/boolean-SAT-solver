@@ -17,7 +17,6 @@ int checker::validate()
 	{
 		char next = peek(); // Nächstes Zeichen vormerken
 		current = get(); // Nach jetzigem Zeichen Handeln und den Stack modifizieren
-		std::cout << "current char: " << current << std::endl;
 		switch (current)
 		{
 			case '(':
@@ -29,6 +28,6 @@ int checker::validate()
 				break;
 		}
 	}
-	if (tracker.pop() == '@') return 0;
-	return 1;
+	if (tracker.pop() == '@') return 0; // return für den Fall, dass klammern passen
+	return 1;		//return für den Fall, dass Klammern nich passen
 }
