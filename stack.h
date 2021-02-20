@@ -1,5 +1,5 @@
-#ifndef LINKED_LIST_H
-#define LINKED_LIST_H
+#ifndef STACK_H
+#define STACK_H 
 
 
 //verkettete Liste zur implementierung eines Stacks

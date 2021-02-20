@@ -1,7 +1,7 @@
 #ifndef CHECKER_H
 #define CHECKER_H
 #include "parser.h"
-
+#include "stack.h"
 class checker : public parser
 {
 /*
@@ -10,10 +10,15 @@ class checker : public parser
  * Als Algorithmus wird eine Art Kellerautomat verwendet, der einen Stack zur Prüfung verwendet
  * */
 	private:
-		Stack tracker; // stack struktur um die Klammern zu prüfen
+		stack tracker; // stack struktur um die Klammern zu prüfen
 
 
 	public:
+		checker(const char* input);
+		//~checker(){~tracker();};
+		int validate();		// validieren der Klammersetzung 
+
+
 
 
 };

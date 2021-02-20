@@ -42,10 +42,14 @@ char stack::push(char value)
 
 char stack::pop()
 {
-	list* upper = this->top;
-	this->top = (this->top)->next;
-	char ret = upper->data;
-	delete upper;
-	this->stack_size--;
-	return ret;
+	if (this->stack_size >0)
+	{
+		list* upper = this->top;
+		this->top = (this->top)->next;
+		char ret = upper->data;
+		delete upper;
+		this->stack_size--;
+		return ret;
+	}
+	else return '#'; //für den Fall, dass ein pop bei leerem stack versucht wird, wird ein bestimmtes Zeichenzurückgegeben
 }

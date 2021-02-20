@@ -3,7 +3,7 @@
 
 class parser
 {
-	private:
+	protected:
 		const char* input;	// input string 
 		int index;  // index des Momentanen Chars 
 
