@@ -1,22 +1,6 @@
 #ifndef STACK_H
 #define STACK_H 
-
-
-//verkettete Liste zur implementierung eines Stacks
-
-struct list
-{
-	list* next;
-	char data;
-};
-
-list* append(list* head,char data);
-
-void* get_data(list* head, int index);
-
-void destruct_all(list* head);
-
-
+#include "linked_list.h"
 class stack
 {
 

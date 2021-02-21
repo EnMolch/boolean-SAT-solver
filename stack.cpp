@@ -1,25 +1,5 @@
 #include "stack.h"
-list *insert(list* head, char data)
-{
-	list* next = head;
-	list* append = new list{next, data};
-	return append;
-}
-
-void destruct_all(list* head)
-{
-	list* current = 0;
-	list* p = head;
-	while (p != 0)
-	{
-		current = p;
-		p = current->next;
-		delete [] current; 
-	}
-}
-
-
-
+#include "linked_list.h"
 stack::stack()
 {
 	// anlegen des ersten Elements und initialisierung des Stacksymbols
@@ -35,14 +15,14 @@ stack::~stack()
 
 char stack::push(char value)
 {
-	this->top = insert(this->top, value);
+	this->top = append(this->top, value);
 	this->stack_size++;
 	return value;
 }
 
 char stack::pop()
 {
-	if (this->stack_size >0)
+	if (this->stack_size >=0)
 	{
 		list* upper = this->top;
 		this->top = (this->top)->next;
