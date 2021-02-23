@@ -46,7 +46,7 @@ class lexer: public parser
 		int is_ascii_letter (char test);	
 /*Grammatik-Regeln des Lexers:
  * Nach einer ')' darf alles stehen -> kein lookahead nötig
- * Nach einer '(' darf alles außer ein binärer Operator stehen
+ * Nach einer '(' darf alles außer ein binärer Operator oder eine ’)’ stehen
  * Nach einer variable darf nur ein binärer Operator oder eine ')' 
  * Nach einem '!' darf alles außer ein binärer Operator oder eine ')' stehen.
  * nach einem binären Operator darf kein anderer binärer Operator stehen und keine ')'

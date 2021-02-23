@@ -81,7 +81,7 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 
 			case '(':  // danach darf alles außer ein binärer Operator stehen
 				// konstrukte wie () () () (!1 & A) müsse später entfernt werden
-				if (! is_binary_op (next_value)) return paren_open;
+				if ( (! is_binary_op (next_value)) && next_value != ')' ) return paren_open;
 				return error;
 
 			case ')': // danach darf alles stehen
