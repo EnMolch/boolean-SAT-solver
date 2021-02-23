@@ -2,7 +2,12 @@
 
 char parser::peek()
 {
-	return input [index+1];
+	int i = 1;
+	while(input[index + i] == ' ')
+	{
+		i++;
+	}
+	return input [index + i];
 }
 
 char parser::get()
