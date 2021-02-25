@@ -65,7 +65,7 @@ int lexer::validate_op(char test)
 
 int lexer::validate_var(char test)
 {
-	return ( (test == ')') || (test == '&') || (test == '|'));
+	return ( (test == ')') || (test == '&') || (test == '|') | (test == '\0'));
 }
 
 int lexer::is_ascii_letter(char test)
@@ -84,7 +84,7 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 	char next_value = peek_non_blanc(); // nächstes nicht whitespace- Zeichen
 	char current_value = get(); 	// jetziges Zeichen
 	// Alle Fälle durchgehen und passende Codes zurückgeben
-	if (next_value != 0)
+	if (current_value != 0)
 	{	
 		switch (current_value)
 		{
