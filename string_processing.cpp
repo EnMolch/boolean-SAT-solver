@@ -34,15 +34,22 @@ int string_processing::stringcompare(const char* string1, const char* string2)
 
 string::string()
 {
-	this->start = new list; 
+	this->start = new list {0,0}; 
 	this->head = start;
 }
 
 string::string(const char* str)
 {
-	this->start = new list;
+	this->start = new list {0,0};
 	this->head = start;
 	string::append(str);
+}
+
+void string::reset()
+{
+	destruct_all(start);
+	this->start = new list{0,0};
+	this->head = start;
 }
 
 void string::append(const char* str)
@@ -56,35 +63,31 @@ void string::append(const char* str)
 void string::append(char c)
 {
 	head->data = c;
-	head->next = new list;
+	head->next = new list {0,0};
 	head = head->next;
 }
 
 string::~string()
 {
-	destruct_all(start); // aufruf mit start, da die Liste hier "Falsch herum" gebaut wird
+	if (start!=0) destruct_all(start); // aufruf mit start, da die Liste hier "Falsch herum" gebaut wird
 }
 
-char* string::convert()
+char* string::convert() // Umwandlung der verketteten Liste in ein char Array auf dem Heap
 {	
-	int counter = 0; // Zähler für die Länge der Liste
+	int list_len = 0; // Zähler für die Länge der Liste
 	list* p = start;
-	while (p != 0)
+	while (p != head) // iteriere bis zum Kopf der Liste
 	{
-		counter++;
+		list_len++;
 		p = p->next;	
 	}
-	std::cout << counter << std::endl;
-	char* ret = new char[counter];
-
-	counter = 0;
+	char* ret = new char[list_len+1];
 	p = start;
-	while (p!=0)
+	for(int counter = 0; counter < list_len; counter++) // durchiterieren und das heap-array füllen
 	{
 		ret[counter] = p->data;
-		counter++;
 		p = p->next;
 	}
-	ret[counter] = 0; // abschließendes 0 - Byte
-	return ret;
+	ret[list_len] = 0; // abschließendes 0 - Byte
+	return ret; // pointer auf das Heap- array zurückgeben
 }

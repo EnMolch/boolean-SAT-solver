@@ -3,6 +3,7 @@
 
 #include "parser.h"
 #include "stack.h"
+#include "string_processing.h"
 // status soll auch für das restliche Programm verständlich sein
 enum lexer_status {
 	
@@ -29,8 +30,11 @@ class lexer: public parser
 	private:
 		stack tracker; // stack struktur um die Klammern zu prüfen
 		int* lexemes; // Abstrahiertes Layout der Formel
-		char** variables;
-		
+		int max_size; 	// länge des Eingabestrings
+		char** name_of_vars;
+		int var_counter; // Zähler für Variablen
+		string var;	// container für das Zusammenbauen von Variablen
+			
 
 	public:
 		lexer(const char* input);

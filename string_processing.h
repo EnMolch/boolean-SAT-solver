@@ -27,6 +27,7 @@ class string
 		void append(const char* str); // an bestehenden String anfügen
 		void append(char c);
 		char* convert();  // in ein  char[] auf dem Heap convertieren
+		void reset();	// leeren des Strings
 };
 #endif
 

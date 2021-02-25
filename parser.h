@@ -10,6 +10,7 @@ class parser
 	public:
 		parser(const char* string) : input(string), index(0){}
 		char peek(); 
+		char peek_non_blanc();
 		char get();
 };
 

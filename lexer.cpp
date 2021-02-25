@@ -4,16 +4,26 @@
 #include "string_processing.h"
 #include <iostream>
 
-lexer::lexer(const char* string):parser(string)
+lexer::lexer(const char* str):parser(str)
 {
 	stack tracker();
-	int max_size = string_processing::strlen(string);
-	//lexemes = new int[max_size];
+	var_counter = 0;
+	max_size = string_processing::strlen(str);
+	name_of_vars = new char* [max_size]; 
+	string var();
 }
 
 lexer::~lexer()
 {
-	//delete [] lexemes;
+	int i = 0;
+	char* var  = name_of_vars[0];
+	while (var != 0) // freigeben der in "name_of_vars" referenzierten strings
+	{
+		i++;
+		delete [] var;
+		var = name_of_vars[i];
+	}
+	delete [] name_of_vars;
 }
 
 
@@ -68,10 +78,11 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 {
 /*	Iteriert einen Character nacheinander den String, außer bei variablen, diese werden direkt konsumiert.
  *	alles andere kann durch den Status - Code identifiziert werden.
- * */
-	char next_value = peek();
-	char current_value = get();
-	
+ * */	
+	std::cout <<"restlicher string:"<< input+index << std::endl;	
+	char next_char = peek(); // nächstes Zeichen auf dem Input
+	char next_value = peek_non_blanc(); // nächstes nicht whitespace- Zeichen
+	char current_value = get(); 	// jetziges Zeichen
 	// Alle Fälle durchgehen und passende Codes zurückgeben
 	if (next_value != 0)
 	{	
@@ -112,7 +123,28 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 
 			default:
 				// erlaubt sind nur Buchstaben in Ascii, daher wird dies hier geprüft
-				if ( is_ascii_letter(current_value) && validate_var(next_value) ) return variable;
+				if ( is_ascii_letter(current_value))
+				{
+					var.append(current_value);
+					while (is_ascii_letter(next_char)) // setze die Variable zusammen
+					{
+						next_char = peek(); 	// whitespace berücksichtigen um zu trennen
+						next_value = peek_non_blanc(); // syntaxregeln beachten
+						char following_char = get();
+						var.append(following_char);
+					}
+					if (validate_var(next_value))
+					{
+						name_of_vars[var_counter] = var.convert(); 
+						std::cout << "variablenname : "<< name_of_vars[var_counter] << std::endl;
+						var_counter++; // index für die nächste Variable
+						var.reset();
+						return variable;
+					}	
+					var.reset();
+					return error;
+
+				}
 				return error;  // keine der oberen Chars oder kein Ascii Buchstabe ist ein Fehler
 		}
 	}

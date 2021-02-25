@@ -1,5 +1,5 @@
 #include "linked_list.h"
-
+#include <iostream>
 list *append(list* head, char data) //Anfügen an die verkettete Liste
 {
 	list* next = head;
