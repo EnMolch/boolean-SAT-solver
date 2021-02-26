@@ -10,6 +10,7 @@ lexer::lexer(const char* str):parser(str)
 	var_counter = 0;
 	max_size = string_processing::strlen(str);
 	name_of_vars = new char* [max_size]; 
+	lexemes = new int [max_size];
 	string var();
 }
 
@@ -26,6 +27,7 @@ lexer::~lexer()
 	delete [] name_of_vars;
 }
 
+char** lexer::get_names(){return name_of_vars;}
 
 int lexer::validate_parens()
 {
@@ -46,6 +48,7 @@ int lexer::validate_parens()
 				break;
 		}
 	}
+	index = 0; 	// index muss am Ende zurückgesetzt werden
 	char test = tracker.pop();
 	if (test == '@') return correct; // return für den Fall, dass klammern passen
 	return error;		//return für den Fall, dass Klammern nicht passen
@@ -136,7 +139,6 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 					if (validate_var(next_value))
 					{
 						name_of_vars[var_counter] = var.convert(); 
-						std::cout << "variablenname : "<< name_of_vars[var_counter] << std::endl;
 						var_counter++; // index für die nächste Variable
 						var.reset();
 						return variable;
@@ -150,4 +152,28 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 	}
 	return end_of_string;
 
+}
+
+
+int* lexer::lex_completely()
+{
+	int status = 1;
+	int position = 0;	// position der Tokens im array
+	while (status != error && status != end_of_string)
+	{
+		status = lex();
+		lexemes[position] = status;
+		position++;
+	}
+
+	if(status == error) 
+	{
+		delete [] lexemes;
+		return 0;
+	}
+
+	else
+	{
+		return lexemes;
+	}
 }

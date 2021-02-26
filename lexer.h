@@ -40,7 +40,9 @@ class lexer: public parser
 		lexer(const char* input);
 		~lexer();
 		int validate_parens();		// validieren der Klammersetzung 
-		int lex();
+		int lex();			// konsumeiere einige Chars des Inputs und gebe ein Token zurück
+		int* lex_completely();		// den Lexer auf den ganzen Input anwendeun
+
 
 
 		// helferfunktionen für die Übersichtlichkeit des Lexers
@@ -48,6 +50,9 @@ class lexer: public parser
 		int validate_op (char test); // testet Bedingungen für das korrekte Verwenden von Operatoren
 		int validate_var (char test); // testet Bedingungen für das korrekte Verwenden von Variablen
 		int is_ascii_letter (char test);	
+
+		//getter
+		char** get_names();
 /*Grammatik-Regeln des Lexers:
  * Nach einer ')' darf alles stehen -> kein lookahead nötig
  * Nach einer '(' darf alles außer ein binärer Operator oder eine ’)’ stehen
