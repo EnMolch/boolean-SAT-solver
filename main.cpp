@@ -3,7 +3,7 @@
 //
 #include "string_processing.h"
 #include "input_handler.h"
-#include <stdio.h>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -17,6 +17,10 @@ int main(int argc, char* argv[])
 			return 0;
 
 		case FILE_INPUT:
+			// TODO nicht vergessen, am Ende den input zu DELETEN!
+			char* input = get_file_input(argv);
+			std::cout << "input contents: " << input << std::endl;
+			delete [] input;
 			return 0;
 	}
 	return 0;

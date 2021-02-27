@@ -123,6 +123,11 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 
 			case ' ':
 				return (lex()); // leerzeichen werden übersprungen
+			
+			case 0xa:
+				return (lex()); // newline wird ebenfalls übersprungen
+			case 9:
+				return (lex()); // Tablulator wird auch übersprungen
 
 			default:
 				// erlaubt sind nur Buchstaben in Ascii, daher wird dies hier geprüft
