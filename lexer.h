@@ -50,9 +50,11 @@ class lexer: public parser
 		int validate_op (char test); // testet Bedingungen für das korrekte Verwenden von Operatoren
 		int validate_var (char test); // testet Bedingungen für das korrekte Verwenden von Variablen
 		int is_ascii_letter (char test);	
+		int validate_start(char test);
 
 		//getter
 		char** get_names();
+		int* get_lexemes();
 /*Grammatik-Regeln des Lexers:
  * Nach einer ')' darf alles stehen -> kein lookahead nötig
  * Nach einer '(' darf alles außer ein binärer Operator oder eine ’)’ stehen

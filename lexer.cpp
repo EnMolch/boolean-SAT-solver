@@ -29,6 +29,8 @@ lexer::~lexer()
 
 char** lexer::get_names(){return name_of_vars;}
 
+int* lexer::get_lexemes(){return lexemes;}
+
 int lexer::validate_parens()
 {
 	// TODO wäre vielleicht effizienter eine Variable zu inc/decrementieren statt nen ganzen Stack aufzubauen
@@ -77,6 +79,12 @@ int lexer::is_ascii_letter(char test)
 	return ( ((test >= 0x41) && (test <= 0x5a)) || ((test>= 0x61) && (test <= 0x7a)) );
 }
 
+int lexer::validate_start(char test)
+{
+	return (is_ascii_letter(test) || test == '!' || test =='(');
+}
+
+
 int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls das Variablenverzeichniss
 {
 /*	Iteriert einen Character nacheinander den String, außer bei variablen, diese werden direkt konsumiert.
@@ -87,6 +95,18 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 	char next_value = peek_non_blanc(); // nächstes nicht whitespace- Zeichen
 	char current_value = get(); 	// jetziges Zeichen
 	// Alle Fälle durchgehen und passende Codes zurückgeben
+	
+
+	if(this->index == 1)	// sonderfall Anfang
+	{
+		if (!(validate_start(current_value))) return error;
+	}
+
+	if(next_value == 0)	//sonderfall Ende
+	{
+		if(!(is_ascii_letter(current_value) || current_value == ')')) return error;
+	}
+
 	if (current_value != 0)
 	{	
 		switch (current_value)
@@ -94,7 +114,7 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 			// TODO eventuell schönere Error codes, also Syntax, illegal char, ...
 
 			case '(':  // danach darf alles außer ein binärer Operator stehen
-				// konstrukte wie () () () (!1 & A) müsse später entfernt werden
+				// konstrukte wie () () () (!1 & A) müssen entfernt werden
 				if ( (! is_binary_op (next_value)) && next_value != ')' ) return paren_open;
 				return error;
 
