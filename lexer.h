@@ -54,7 +54,6 @@ class lexer: public parser
 
 		//getter
 		char** get_names();
-		int* get_lexemes();
 /*Grammatik-Regeln des Lexers:
  * Nach einer ')' darf alles stehen -> kein lookahead nötig
  * Nach einer '(' darf alles außer ein binärer Operator oder eine ’)’ stehen

@@ -29,8 +29,6 @@ lexer::~lexer()
 
 char** lexer::get_names(){return name_of_vars;}
 
-int* lexer::get_lexemes(){return lexemes;}
-
 int lexer::validate_parens()
 {
 	// TODO wäre vielleicht effizienter eine Variable zu inc/decrementieren statt nen ganzen Stack aufzubauen
