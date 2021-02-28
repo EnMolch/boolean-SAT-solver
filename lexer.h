@@ -5,7 +5,7 @@
 #include "stack.h"
 #include "string_processing.h"
 // status soll auch für das restliche Programm verständlich sein
-enum lexer_status {
+enum token_status {
 	
 	error,
 	correct,
