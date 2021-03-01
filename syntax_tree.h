@@ -20,12 +20,13 @@ class syntax_tree
 	private:
 		int* tokens;
 		char** variables;
+		int number_of_variables;
+		int number_distinct_variables;
 		tree* root;
-		int bin_operators[2] = {operator_or, operator_and};  // Sammlung der binären Operatoren
 
 	public: 
-		
-		syntax_tree(int * all_tokens, char** all_variables); // nimm tokens und variablen
+
+		syntax_tree(int * all_tokens, char** all_variables, int number); // nimm tokens und variablen
 		~syntax_tree();
 		int find_matching_paren(int index); // gibt index der passenden schließenden Klammer zurück, nötig für den Baum
 		
@@ -36,6 +37,9 @@ class syntax_tree
 		void convert_to_tree(); // tokens in den Syntaxbaum umwandeln und variablen mit array-indezes ersetzen
 		tree* convert_expression(); // simple fälle für die Konvertierung 
 		tree* get_root();
+		tree* handle_first_expr();
+
+		int get_array_index(int position);  // gibt den Array - Index zu einer variable zurück
 
 		// z.B A&(B|C)&D  muss der Baum nach oben weitergebaut werden, da innerhalb der Klammer beide Möglichkeiten ausgeschöpft sind. zusätzlich wird "!" einfach so reingeschrieben.
 };

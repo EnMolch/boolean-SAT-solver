@@ -1,5 +1,6 @@
 #include "linked_list.h"
 #include <iostream>
+#include <stdio.h>
 list *append(list* head, char data) //Anfügen an die verkettete Liste
 {
 	list* next = head;
@@ -15,7 +16,7 @@ void destruct_all(list* head)
 	{
 		current = p;
 		p = current->next;
-		delete [] current; 
+		delete current; 
 	}
 }
 

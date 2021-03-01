@@ -6,12 +6,12 @@
 
 lexer::lexer(const char* str):parser(str)
 {
-	stack tracker();
+	stack tracker;
+	string var;
 	var_counter = 0;
 	max_size = string_processing::strlen(str);
 	name_of_vars = new char* [max_size]; 
 	lexemes = new int [max_size];
-	string var();
 }
 
 lexer::~lexer()
@@ -177,6 +177,7 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 
 }
 
+int lexer::get_number_of_variables() {return var_counter;}
 
 int* lexer::lex_completely()
 {

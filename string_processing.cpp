@@ -1,6 +1,6 @@
 #include <cstddef>
 #include "string_processing.h"
-#include <iostream>
+#include <stdio.h>
 #include "linked_list.h"
 //implement the methods of the string-class
 int string_processing::strlen(const char* first_char)

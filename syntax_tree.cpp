@@ -1,12 +1,29 @@
 #include "syntax_tree.h"
 #include "lexer.h"
+#include "string_processing.h"
 #include <iostream>
 
-syntax_tree::syntax_tree(int* all_tokens, char** all_variables)
+syntax_tree::syntax_tree(int* all_tokens, char** all_variables, int num_var)
 {
 	tokens = all_tokens;
 	variables = all_variables;
 	root = new tree {0,0,0};
+	number_of_variables = num_var;
+	int increment=1;
+	for(int i = 0; i<number_of_variables;i++)
+	{
+		char* current_var = variables[i];
+		for(int j=i+1; j<number_of_variables;j++) // schleife bis zum Arrayende
+		{
+			if(string_processing::stringcompare(current_var,variables[j]))
+			{
+				increment = 0;
+			}
+		}
+		number_distinct_variables += increment;
+		increment = 1;
+	}
+	std::cout <<"Anzahl einzigartiger Variablen" << number_distinct_variables << std::endl;
 }
 
 syntax_tree::~syntax_tree()
@@ -106,14 +123,30 @@ tree* syntax_tree::chroot(int direction, int data)
 	root = ret;
 	return ret;
 }
-
+/*
 void syntax_tree::convert_to_tree()
 {
-// von Unten bauen, in der größten verschachtetlungstiefe der Klammern anfagen, rest sollte relativ simpel sein
-
+	tree* start = handle_first_expr(0);
 }
 
-tree* syntax_tree::convert_leaf_expression(int operator_type, int left, int right)
+tree* handle_first_expr(int index)
+{	
+	int token = tokens[index];
+	switch (token)
+	{
+		case variable:
+			// prüfen des folgenden Operators
+			if (tonkens[index+1] == operator_or) ret = new tree {operator_or,0,0};
+			else ret = new tree {operator_and,0,0};
+
+			// zuordnung variable zu name bzw array - index
+	}
+}
+*/
+
+
+
+/*tree* syntax_tree::convert_leaf_expression(int operator_type, int left, int right)
 {
 	// Parameter: Operator für den Typ des binären Operators
 	// 	      left für die linke Seite des Operators 
@@ -140,4 +173,4 @@ tree* syntax_tree::convert_leaf_expression(int operator_type, int left, int righ
 			return ret;
 	}
 // Der hier zurückgegebene Zeiger kann an bestehende Bäume angehängt werden, um sie zu beenden.	
-}
+}*/
