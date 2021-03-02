@@ -7,7 +7,7 @@
 // status soll auch für das restliche Programm verständlich sein
 enum token_status {
 	
-	error,
+	error=65,
 	correct,
 	variable,
 	operator_or,

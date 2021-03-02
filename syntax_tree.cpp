@@ -5,10 +5,12 @@
 
 syntax_tree::syntax_tree(int* all_tokens, char** all_variables, int num_var)
 {
+	// initialisierung der Klassenattribute
 	tokens = all_tokens;
 	variables = all_variables;
 	root = new tree {0,0,0};
 	number_of_variables = num_var;
+	number_distinct_variables = 0;
 	int increment=1;
 	for(int i = 0; i<number_of_variables;i++)
 	{
@@ -23,7 +25,20 @@ syntax_tree::syntax_tree(int* all_tokens, char** all_variables, int num_var)
 		number_distinct_variables += increment;
 		increment = 1;
 	}
-	std::cout <<"Anzahl einzigartiger Variablen" << number_distinct_variables << std::endl;
+	std::cout <<"Anzahl einzigartiger Variablen: " << number_distinct_variables << " von 64" << std::endl;
+	convert_variable_to_name(); // dictionary für index der Variable in tokens zum index in namen
+	convert_name_to_value(); // dictionary für den index in namen zu Arrayposition
+	int i = 0;
+	int iterator = tokens[i];
+	while (iterator != end_of_string)
+	{
+		if(iterator == variable)
+		{
+		std::cout << name_to_value.find(variable_to_name.find(i)->second)->second << std::endl;
+		}
+		i++;
+		iterator = tokens[i];
+	}
 }
 
 syntax_tree::~syntax_tree()
@@ -32,9 +47,69 @@ syntax_tree::~syntax_tree()
 	remove_branch(root);
 }
 
+void syntax_tree::convert_variable_to_name()
+{
+	// in den Lexer Tokens steht lediglich ob das Token eine Variable ist, der Name steht separat, daher müssen diese verknüpft werden	
+	if (number_of_variables > 0) // bei 0 variablen muss nichts getan werden
+	{
+
+		int iterator = 0; // für das Iterieren durch alle Tokens
+		int variable_counter = 0; // für das speichern des indexes in namen
+		int element  = tokens[iterator];
+		while(element != end_of_string) // iterieren durch alle Tokens um die indezes der variablennamen zu finden
+		{
+			if(element == variable)
+			{
+				variable_to_name.insert(std::pair <int,int>(iterator, variable_counter));
+				variable_counter++;
+			}
+			iterator++;
+			element = tokens[iterator];
+		}
+	}
+}
+
+void syntax_tree::convert_name_to_value()
+{
+	if(number_of_variables > 0)
+	{
+		int bitset_positions[64];
+		int track_uniqueness = 0; // nachvollziehen der ausgelassenen Indizes
+		for (int i = 0; i<number_of_variables;i++)
+		{
+			if (first_instance(variables[i]) == i)
+			{
+				name_to_value.insert(std::pair <int,int>(i, track_uniqueness));
+				track_uniqueness++;
+			}
+			else
+			{
+				name_to_value.insert(std::pair <int,int>(i, find_first_entry(i)));
+			}
+		}	
+	}
+}
+int syntax_tree::find_first_entry(int index)
+{
+	int index_in_name_of_first = first_instance(variables[index]); //ermittle die index der ersten instanz in name
+	return name_to_value.find(index_in_name_of_first)->second; // gib den beim Name stehenden bitset index 
+}
+
+int syntax_tree::first_instance(char* variable_name)
+{
+	// gib den index der ersten instanz zurück, falls nicht vorhanden gib -1 zurück
+	for (int i = 0; i<number_of_variables; i++)
+	{
+		if(string_processing::stringcompare(variables[i], variable_name)) return i;
+	}
+	return -1; 	// hierzu wird es nie kommen, falls aber ein fehler auftritt, lässt er sich hier erkennen
+}
+
 int syntax_tree::find_matching_paren(int index)
 {
 	// gibt den index der passenden öffnenden / schließenden Klammer oder -1 zurück
+	// könnte durch andere Datenstrukturen effizienter werden, für maximal 64 variablen aber ausreichend
+
 	int paren_tracker = 0;
 	int first_flag = 1;
 	if(tokens[index] == paren_open)
