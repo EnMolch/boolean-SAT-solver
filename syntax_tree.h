@@ -35,17 +35,20 @@ class syntax_tree
 		tree* append_node(tree* node, int direction, int data); // Anfügen eines Elements
 		int remove_branch(tree* node);
 		tree* chroot(int direction, int data); // wurzel ändern, also "oben" anfügen
+		void print_tree(tree* branch);
 
 		void convert_to_tree(); // tokens in den Syntaxbaum umwandeln und variablen mit array-indezes ersetzen
-		tree* convert_expression(); // simple fälle für die Konvertierung 
 		tree* get_root();
-		tree* handle_first_expr();
 		void convert_variable_to_name();
 		void convert_name_to_value();
 		int first_instance(char* var);
 		int find_first_entry(int index);
+		int get_bitset_index(int index);
+		int find_next_binary_operator(int index);
 
-
+		tree* do_first_tokens();
+		tree* convert_no_parens(int index, tree* previous);
+		tree* do_stuff(int start);
 		// z.B A&(B|C)&D  muss der Baum nach oben weitergebaut werden, da innerhalb der Klammer beide Möglichkeiten ausgeschöpft sind. zusätzlich wird "!" einfach so reingeschrieben.
 };
 

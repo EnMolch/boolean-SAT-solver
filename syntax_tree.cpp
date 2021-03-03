@@ -60,7 +60,7 @@ void syntax_tree::convert_variable_to_name()
 		{
 			if(element == variable)
 			{
-				variable_to_name.insert(std::pair <int,int>(iterator, variable_counter));
+				this->variable_to_name.insert(std::pair <int,int>(iterator, variable_counter));
 				variable_counter++;
 			}
 			iterator++;
@@ -79,12 +79,12 @@ void syntax_tree::convert_name_to_value()
 		{
 			if (first_instance(variables[i]) == i)
 			{
-				name_to_value.insert(std::pair <int,int>(i, track_uniqueness));
+				this->name_to_value.insert(std::pair <int,int>(i, track_uniqueness));
 				track_uniqueness++;
 			}
 			else
 			{
-				name_to_value.insert(std::pair <int,int>(i, find_first_entry(i)));
+				this->name_to_value.insert(std::pair <int,int>(i, find_first_entry(i)));
 			}
 		}	
 	}
@@ -187,6 +187,13 @@ tree* syntax_tree::append_node(tree* node, int direction, int data)
 
 tree* syntax_tree::get_root(){return root;}
 
+void syntax_tree::print_tree(tree* branch)
+{
+	std::cout<< "data: "<<branch->data << std::endl;
+	if(branch->left != 0)print_tree(branch->left);
+	if(branch->right != 0)print_tree(branch->right);
+}
+
 tree* syntax_tree::chroot(int direction, int data)
 {
 	// direction -> in welche Richtung die alte Wurzel soll
@@ -197,6 +204,91 @@ tree* syntax_tree::chroot(int direction, int data)
 	ret->data = data;
 	root = ret;
 	return ret;
+}
+
+int syntax_tree::get_bitset_index(int index)
+{
+	return this->name_to_value.find(this->variable_to_name.find(index)->second)->second;
+}
+
+int syntax_tree::find_next_binary_operator(int index)
+	{
+		int iterator = index +1;
+		int current_token = tokens[iterator];
+		while(current_token != operator_or && current_token != operator_and)
+		{
+			if (current_token == end_of_string) return -1; // falls keiner folgt return -1
+			iterator++;
+			current_token = tokens[iterator];
+		}
+		return iterator;	// return den Index des nächsten binären Operators
+	}
+
+tree* syntax_tree::convert_no_parens(int index, tree* previous)
+{
+	// darauf ausgelegt, durch Operatoren zu iterieren beim callen
+	tree* ret;
+	switch(tokens[index])
+	{
+		case variable:
+
+			if(tokens[index-1] == operator_not)
+			{
+				// baue den Baum von "unten" -> erst die variable ,dann das Not
+				tree* var_tree = new tree {get_bitset_index(index), 0, 0};
+				ret = new tree{operator_not,0,var_tree};
+				return ret;	  
+			}
+
+			else
+			{
+				ret = new tree {get_bitset_index(index),0,0};
+				return ret;
+			}
+
+
+		case operator_or:
+
+			ret = new tree{operator_or,previous,convert_no_parens(find_next_binary_operator(index),0)};
+			return ret;
+
+
+		case operator_and:
+			
+			if (previous == 0)
+			{
+				ret = new tree{operator_and, convert_no_parens(index-1, 0), convert_no_parens(index+1,0)};
+			}	
+			ret = new tree{operator_and, previous, convert_no_parens(index+1,0)};
+			return ret;
+
+		case operator_not:
+			return convert_no_parens(index+1,0);
+			 
+	}
+	return 0;
+}
+
+tree* syntax_tree::do_first_tokens()
+{
+	int first_token = tokens[0];
+
+	if(first_token == variable) return new tree{get_bitset_index(0),0,0};
+	else if (first_token == operator_not)
+	{
+		tree* var = new tree{get_bitset_index(1), 0, 0};
+		tree* ret = new tree{operator_not, 0, var};
+		return ret;
+	}
+	return 0;
+}
+
+tree* syntax_tree::do_stuff(int start)
+{
+	tree* new_root = convert_no_parens(start, do_first_tokens());
+	remove_branch(root);
+	root = new_root;
+	return root;
 }
 /*
 void syntax_tree::convert_to_tree()
