@@ -8,9 +8,20 @@ syntax_tree::syntax_tree(int* all_tokens, char** all_variables, int num_var)
 	// initialisierung der Klassenattribute
 	tokens = all_tokens;
 	variables = all_variables;
-	root = new tree {0,0,0};
 	number_of_variables = num_var;
 	number_distinct_variables = 0;
+
+	// finden des letzten relevanten Tokens
+	int iterator = 0;
+	int data = tokens[iterator];
+	while (data != end_of_string)
+	{
+		iterator++;
+		data = tokens[iterator];
+	}
+	last_relevant_token = iterator-1;
+
+	// herausfinden wie viele verschiedene Variablen existieren
 	int increment=1;
 	for(int i = 0; i<number_of_variables;i++)
 	{
@@ -29,15 +40,15 @@ syntax_tree::syntax_tree(int* all_tokens, char** all_variables, int num_var)
 	convert_variable_to_name(); // dictionary für index der Variable in tokens zum index in namen
 	convert_name_to_value(); // dictionary für den index in namen zu Arrayposition
 	int i = 0;
-	int iterator = tokens[i];
-	while (iterator != end_of_string)
+	int iterate = tokens[i];
+	while (iterate != end_of_string)
 	{
-		if(iterator == variable)
+		if(iterate == variable)
 		{
 		std::cout << name_to_value.find(variable_to_name.find(i)->second)->second << std::endl;
 		}
 		i++;
-		iterator = tokens[i];
+		iterate = tokens[i];
 	}
 }
 
@@ -175,35 +186,15 @@ int syntax_tree::remove_branch(tree* node)
 	return 0;
 }
 
-tree* syntax_tree::append_node(tree* node, int direction, int data)
-{
-	// Anfügen eines Elementes an einen bekannten Knoten
-	tree* ret = new tree {0, 0, 0};
-	if(direction == DIR_LEFT) node->left = ret;
-	else if (direction == DIR_RIGHT) node->right = ret;
-	ret->data = data;
-	return ret;
-}
 
 tree* syntax_tree::get_root(){return root;}
 
 void syntax_tree::print_tree(tree* branch)
 {
-	std::cout<< "data: "<<branch->data << std::endl;
+	std::cout<< "data: "<<branch->data<< std::endl;
 	if(branch->left != 0)print_tree(branch->left);
+	std::cout << "  ";
 	if(branch->right != 0)print_tree(branch->right);
-}
-
-tree* syntax_tree::chroot(int direction, int data)
-{
-	// direction -> in welche Richtung die alte Wurzel soll
-	// data: datenpart der neuen Wurzel
-	tree* ret = new tree {0,0,0};
-	if(direction == DIR_LEFT) ret->left = root;
-	else if (direction == DIR_RIGHT) ret->right = root;
-	ret->data = data;
-	root = ret;
-	return ret;
 }
 
 int syntax_tree::get_bitset_index(int index)
@@ -224,10 +215,12 @@ int syntax_tree::find_next_binary_operator(int index)
 		return iterator;	// return den Index des nächsten binären Operators
 	}
 
-tree* syntax_tree::convert_no_parens(int index, tree* previous)
+tree* syntax_tree::convert_no_parens(int index, tree* previous, int &furthest)
 {
 	// darauf ausgelegt, durch Operatoren zu iterieren beim callen
 	tree* ret;
+	int next_operator = find_next_binary_operator(index);
+	if(index > furthest) furthest = index;		// das rekursive Aufbauen benötigt hier noch die Information, wie weit der Baum nach dem Abbruch einer Kette war
 	switch(tokens[index])
 	{
 		case variable:
@@ -248,22 +241,72 @@ tree* syntax_tree::convert_no_parens(int index, tree* previous)
 
 
 		case operator_or:
+			
+			if (next_operator == -1)
+			{
+				ret = new tree {operator_or, root, convert_no_parens(index+1 ,0,furthest)};
+				root = ret;
+			}
 
-			ret = new tree{operator_or,previous,convert_no_parens(find_next_binary_operator(index),0)};
-			return ret;
+			else if(tokens[next_operator] == operator_or)
+			{
+				ret = new tree{operator_or,root,convert_no_parens(index+1, 0, furthest)};
+				root = ret;
+				return ret;
+			}
 
+			else 
+			{
+				ret = new tree{operator_or, root, convert_no_parens(next_operator, 0, furthest)};
+				root = ret;
+			}
+
+		return ret;
 
 		case operator_and:
-			
+			// solange der nächste operator ein und ist, muss weitergebaut werden	
 			if (previous == 0)
 			{
-				ret = new tree{operator_and, convert_no_parens(index-1, 0), convert_no_parens(index+1,0)};
+				if(next_operator == -1)
+				{
+					ret = new tree{operator_and, convert_no_parens(index-1, 0,furthest), convert_no_parens(index+1,0,furthest)};
+				}
+				else if(tokens[next_operator] == operator_and)
+				{
+					ret = new tree{operator_and, convert_no_parens(index-1, 0,furthest), convert_no_parens(next_operator,0,furthest)};
+				}
+
+				else // nächster Operator ist ein "oder" -> es wird an der Wurzel weitergebaut
+				{
+					ret = new tree{operator_and, convert_no_parens(index-1,0,furthest), convert_no_parens(index+1,0,furthest)};	// fallls nach dem und ein Oder folgt, beende die Rekursion und hänge an der Wurzel an.
+				}
 			}	
-			ret = new tree{operator_and, previous, convert_no_parens(index+1,0)};
+
+			else
+				// previous != 0 heisst einen Sonderfall, es muss der vorherige Baum mitgenommen werden
+			{
+				if(next_operator == -1)
+				 {
+					 ret = new tree{operator_and, previous, convert_no_parens(index+1,0,furthest)};
+					 root = ret;
+				 }
+
+				else if(tokens[next_operator] == operator_and)
+				{
+					std::cout << "Operator And value is : " << operator_and << std::endl;
+					ret = new tree{operator_and, previous, convert_no_parens(next_operator,0,furthest)};
+					root = ret;
+				}
+
+				else
+				{
+					ret = new tree{operator_and, previous, convert_no_parens(index+1, 0, furthest)};
+				}
+			}
 			return ret;
 
 		case operator_not:
-			return convert_no_parens(index+1,0);
+			return convert_no_parens(index+1,0,furthest);
 			 
 	}
 	return 0;
@@ -285,59 +328,13 @@ tree* syntax_tree::do_first_tokens()
 
 tree* syntax_tree::do_stuff(int start)
 {
-	tree* new_root = convert_no_parens(start, do_first_tokens());
-	remove_branch(root);
-	root = new_root;
+	int the_furthest_index = 1;
+	root = do_first_tokens();
+	tree* new_root = convert_no_parens(start, root,the_furthest_index);
+	while (the_furthest_index != last_relevant_token)
+	{
+		convert_no_parens(find_next_binary_operator(the_furthest_index), root, the_furthest_index);
+	}
+	std::cout<<"Addresse der Wurzel" <<root<< std::endl;
 	return root;
 }
-/*
-void syntax_tree::convert_to_tree()
-{
-	tree* start = handle_first_expr(0);
-}
-
-tree* handle_first_expr(int index)
-{	
-	int token = tokens[index];
-	switch (token)
-	{
-		case variable:
-			// prüfen des folgenden Operators
-			if (tonkens[index+1] == operator_or) ret = new tree {operator_or,0,0};
-			else ret = new tree {operator_and,0,0};
-
-			// zuordnung variable zu name bzw array - index
-	}
-}
-*/
-
-
-
-/*tree* syntax_tree::convert_leaf_expression(int operator_type, int left, int right)
-{
-	// Parameter: Operator für den Typ des binären Operators
-	// 	      left für die linke Seite des Operators 
-	// 	      right für die rechte Seite bzw den nicht - operator
-	// 	      left und right müssen "expresssions", also variablen oder wahrheitswerte
-	switch (operator_type)
-	{
-		ret = new tree {0,0,0};
-		case operator_or:
-			ret->data = operator_or;
-			ret->left = new tree {left, 0,0};
-			ret->right = new tree {right,0,0};
-			return ret;
-	
-		case operator_and:
-			ret->data = operator_and;
-			ret->left = new tree {left,0,0};
-			ret->right = new tree {right,0,0};
-			return ret;
-
-		case operator_not:
-			ret->data = operator_not;// Im falle einer Negation wird nur der rechte Ast weiter geführt
-			ret->right = new tree {right,0,0};
-			return ret;
-	}
-// Der hier zurückgegebene Zeiger kann an bestehende Bäume angehängt werden, um sie zu beenden.	
-}*/

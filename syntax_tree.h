@@ -22,6 +22,7 @@ class syntax_tree
 		char** variables;
 		int number_of_variables;
 		int number_distinct_variables;
+		int last_relevant_token;
 		std::map<int, int> variable_to_name; // index der variable zum index in namen
 		std::map<int, int> name_to_value; // index in namen zu position im bitset
 		tree* root;
@@ -47,7 +48,7 @@ class syntax_tree
 		int find_next_binary_operator(int index);
 
 		tree* do_first_tokens();
-		tree* convert_no_parens(int index, tree* previous);
+		tree* convert_no_parens(int index, tree* previous, int &furthest);
 		tree* do_stuff(int start);
 		// z.B A&(B|C)&D  muss der Baum nach oben weitergebaut werden, da innerhalb der Klammer beide Möglichkeiten ausgeschöpft sind. zusätzlich wird "!" einfach so reingeschrieben.
 };
