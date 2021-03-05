@@ -338,3 +338,8 @@ tree* syntax_tree::do_stuff(int start)
 	std::cout<<"Addresse der Wurzel" <<root<< std::endl;
 	return root;
 }
+
+int syntax_tree::get_distinct_vars()
+{
+	return number_distinct_variables;
+}

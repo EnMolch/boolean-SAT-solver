@@ -50,6 +50,7 @@ class syntax_tree
 		tree* do_first_tokens();
 		tree* convert_no_parens(int index, tree* previous, int &furthest);
 		tree* do_stuff(int start);
+		int get_distinct_vars();
 		// z.B A&(B|C)&D  muss der Baum nach oben weitergebaut werden, da innerhalb der Klammer beide Möglichkeiten ausgeschöpft sind. zusätzlich wird "!" einfach so reingeschrieben.
 };
 
