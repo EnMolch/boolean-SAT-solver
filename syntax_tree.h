@@ -45,12 +45,15 @@ class syntax_tree
 		int first_instance(char* var);
 		int find_first_entry(int index);
 		int get_bitset_index(int index);
-		int find_next_binary_operator(int index);
+		int find_next_binary_operator(int index, int global_flag);
 
-		tree* do_first_tokens();
+		int handle_parens(int index);
+		int get_last_relevant_in_parens(int index_of_paren_open);
+		tree* do_first_tokens(int index, int &furthest);
 		tree* convert_no_parens(int index, tree* previous, int &furthest);
 		tree* do_stuff(int start);
 		int get_distinct_vars();
+		tree* loop_through_paren(tree* initial, int &furthest, int last_relevant);
 		// z.B A&(B|C)&D  muss der Baum nach oben weitergebaut werden, da innerhalb der Klammer beide Möglichkeiten ausgeschöpft sind. zusätzlich wird "!" einfach so reingeschrieben.
 };
 
