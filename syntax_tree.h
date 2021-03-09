@@ -1,6 +1,6 @@
-// Klasse, die von Lexertokens zu boolscher Gleichug übrsetzt
-#ifndef SYNTAX_TREE_H
-#define SYNTAX_TREE_H
+#ifndef __SYNTAX__TREE_H
+#define __SYNTAX__TREE_H
+
 
 #define DIR_LEFT 0
 #define DIR_RIGHT 1
@@ -14,8 +14,14 @@ struct tree
 	tree* right;
 };
 
-
-class syntax_tree
+enum exceptions
+{
+	variable_exception,
+	term_exception,
+	expression_exception
+};
+// Ansatz des Implementierens einer Grammatik
+class interpreter
 {
 	private:
 		int* tokens;
@@ -23,38 +29,32 @@ class syntax_tree
 		int number_of_variables;
 		int number_distinct_variables;
 		int last_relevant_token;
+		int global_index;
 		std::map<int, int> variable_to_name; // index der variable zum index in namen
 		std::map<int, int> name_to_value; // index in namen zu position im bitset
 		tree* root;
 
-	public: 
+	public:
+		interpreter(int * all_tokens, char** all_variables, int number); // nimm tokens und variablen
+		~interpreter();
 
-		syntax_tree(int * all_tokens, char** all_variables, int number); // nimm tokens und variablen
-		~syntax_tree();
-		int find_matching_paren(int index); // gibt index der passenden schließenden Klammer zurück, nötig für den Baum
-		
-		tree* append_node(tree* node, int direction, int data); // Anfügen eines Elements
-		int remove_branch(tree* node);
-		tree* chroot(int direction, int data); // wurzel ändern, also "oben" anfügen
-		void print_tree(tree* branch);
+		tree* elementary_truth_val();
+		tree* truth_val();
+		tree* term();
+		tree* expression();
+		tree* parse_tokens();
 
-		void convert_to_tree(); // tokens in den Syntaxbaum umwandeln und variablen mit array-indezes ersetzen
-		tree* get_root();
 		void convert_variable_to_name();
 		void convert_name_to_value();
-		int first_instance(char* var);
-		int find_first_entry(int index);
-		int get_bitset_index(int index);
-		int find_next_binary_operator(int index, int global_flag);
 
-		int handle_parens(int index);
-		int get_last_relevant_in_parens(int index_of_paren_open);
-		tree* do_first_tokens(int index, int &furthest);
-		tree* convert_no_parens(int index, tree* previous, int &furthest);
-		tree* do_stuff(int start);
+		int remove_branch(tree* node);
+		int get_bitset_index(int index);
 		int get_distinct_vars();
-		tree* loop_through_paren(tree* initial, int &furthest, int last_relevant);
-		// z.B A&(B|C)&D  muss der Baum nach oben weitergebaut werden, da innerhalb der Klammer beide Möglichkeiten ausgeschöpft sind. zusätzlich wird "!" einfach so reingeschrieben.
+		int find_first_entry(int index);
+		int first_instance(char* variable_name);
+
+		void advance();
 };
+
 
 #endif

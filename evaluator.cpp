@@ -46,13 +46,13 @@ int evaluator::eval_node(tree* node) // rückgabewert ist der evaluierte Ausdruc
 	switch(node->data)
 	{
 		case operator_or:
-			return left or right;
+			return (left or right);
 
 		case operator_and:
-			return left and right;
+			return (left and right);
 
 		case operator_not:
-			return not right;
+			return (not right);
 
 		case var_true:
 			return 1;

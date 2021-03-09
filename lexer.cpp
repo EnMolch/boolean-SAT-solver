@@ -79,7 +79,7 @@ int lexer::is_ascii_letter(char test)
 
 int lexer::validate_start(char test)
 {
-	return (is_ascii_letter(test) || test == '!' || test =='(');
+	return (is_ascii_letter(test) || test == '!' || test =='(' || test == '0' || test == '1');
 }
 
 
@@ -102,7 +102,7 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 
 	if(next_value == 0)	//sonderfall Ende
 	{
-		if(!(is_ascii_letter(current_value) || current_value == ')')) return error;
+		if(!(is_ascii_letter(current_value) || current_value == ')' || current_value == '1' || current_value == '0')) return error;
 	}
 
 	if (current_value != 0)

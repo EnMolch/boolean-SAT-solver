@@ -4,9 +4,9 @@ OBJECTS = main.o string_processing.o input_handler.o linked_list.o
 SOURCES = main.cpp string_processing.cpp input_handler.cpp linked_list.cpp
 EXECUTABLES = main
 
-all : build
+all : main
 
-build: $(OBJECTS)
+main: $(OBJECTS)
 	g++ $(OBJECTS) -o main
 
 $(OBJECTS): $(SOURCES)
