@@ -45,7 +45,6 @@ char* get_direct_input(char** values)
 char* get_file_input(char** values)
 {
 	std::ifstream input_file;
-	std::cout << "öffne Datei: " << values[2] << std::endl;
 	input_file.open(values[2], std::ifstream::ate); // öffne die Datei am Ende um die Länge herauszufinden
 	if(!input_file)
 	{
@@ -53,7 +52,6 @@ char* get_file_input(char** values)
 		return 0;
 	}
 	int file_size = input_file.tellg(); // länge der Datei bestimmen
-	std::cout << "länge des Files " << file_size << std::endl;
 	char* input_string = new char[file_size];
 	input_file.close();
 	input_file.open(values[2], std::ifstream::in);

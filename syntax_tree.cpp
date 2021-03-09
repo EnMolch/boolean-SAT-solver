@@ -8,6 +8,7 @@ interpreter::interpreter(int * all_tokens, char** all_variables, int number)
 	variables = all_variables;
 	number_of_variables = number;	
 	global_index =0;
+	number_distinct_variables = 0;
 
 	int increment=1;
 	for(int i = 0; i<number_of_variables;i++)
@@ -183,16 +184,13 @@ int interpreter::remove_branch(tree* node)
 	// rekursives löschen aller Kind-Knoten um den ganzen Ast zu löschen
 	if (node->left != 0)
 	{
-		std::cout << "removing left branch" << std::endl;
 		remove_branch(node->left);
 	}
 	
 	if(node->right != 0)
 	{
-		std::cout << "removing right branch" << std::endl;
 		remove_branch(node->right);
 	}
-	std::cout << "deleting a father node" << std::endl;
 	delete [] node;
 	return 0;
 }

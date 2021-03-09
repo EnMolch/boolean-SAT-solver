@@ -1,11 +1,36 @@
 -------------------C++ Testat -------------------
-SAT - Sovler
-parse eingabe, lexen, gegebenenfalls vereinfachen und SAT berechen
+parse eingabe, lexen, gegebenenfalls vereinfachen und durchprobieren
 
 Ausgabe als wahrheitstabelle und einfache ausgabe im Falle des SAT
+
+
+USAGE:
+	Kommandozeile : da | und & vorkommen wird empfohlen, so etwas wie folgendes Konstrukt zu verwenden:
+
+	EQUATION='!(A|B)&C|D'
+	./main $EQUATION
+
+
+	für Dateien:
+	
+	EQUATION.txt:
+	(A|B)|C|D&E&F&G
+
+	./main -f EQUATION.txt
 
 Operatoren: 
 	!A	nicht A
 	A&B	A und B
 	A|B 	A oder B
 	()	Klammern
+
+
+
+Parser-Grammatik:
+
+	elementarer_bool = 0|1|var|(expr)
+	bool = !* elementarer_bool
+	term = bool (& bool)*
+	expression = term (| term)*
+
+Diese Grammitik beschreibt die Konstruktionsregeln vollständig, Implementierung ist in der Klasse Interpreter in syntax_tree.cpp.

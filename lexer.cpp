@@ -68,7 +68,7 @@ int lexer::validate_op(char test)
 
 int lexer::validate_var(char test)
 {
-	return ( (test == ')') || (test == '&') || (test == '|') | (test == '\0'));
+	return ( (test == ')') || (test == '&') || (test == '|') | (test == '\0') | (test == 10));
 }
 
 int lexer::is_ascii_letter(char test)
@@ -88,7 +88,6 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 /*	Iteriert einen Character nacheinander den String, außer bei variablen, diese werden direkt konsumiert.
  *	alles andere kann durch den Status - Code identifiziert werden.
  * */	
-	std::cout <<"restlicher string:"<< input+index << std::endl;	
 	char next_char = peek(); // nächstes Zeichen auf dem Input
 	char next_value = peek_non_blanc(); // nächstes nicht whitespace- Zeichen
 	char current_value = get(); 	// jetziges Zeichen
@@ -100,12 +99,12 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 		if (!(validate_start(current_value))) return error;
 	}
 
-	if(next_value == 0)	//sonderfall Ende
+	if(next_value == 0 || next_value == 10)	//sonderfall Ende
 	{
-		if(!(is_ascii_letter(current_value) || current_value == ')' || current_value == '1' || current_value == '0')) return error;
+		if(!(is_ascii_letter(current_value) || current_value == ')' || current_value == '1' || current_value == '0'|| current_value==10)) return error;
 	}
 
-	if (current_value != 0)
+	if (current_value != 0 && current_value != 10)
 	{	
 		switch (current_value)
 		{
