@@ -99,7 +99,6 @@ tree* interpreter::truth_val()
 	if(!((count % 2) == 0))
 	{
 		tree* ret = new tree {operator_not, 0,0};
-		step_foreward();
 		ret->right = elementary_truth_val(); // sollte später expr callen
 		return ret;
 	}

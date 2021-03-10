@@ -1,5 +1,5 @@
 -------------------C++ Testat -------------------
-parse eingabe, lexen, gegebenenfalls vereinfachen und durchprobieren
+lexen, parsen und durchprobieren
 
 Ausgabe als wahrheitstabelle und einfache ausgabe im Falle des SAT
 
@@ -10,6 +10,9 @@ USAGE:
 	EQUATION='!(A|B)&C|D'
 	./main $EQUATION
 
+
+	oder direkt mit:
+	./main '!(A|B)&C|D'
 
 	für Dateien:
 	

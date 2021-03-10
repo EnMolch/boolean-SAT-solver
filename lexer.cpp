@@ -18,12 +18,12 @@ lexer::lexer(const char* str):reader(str)	// der Lexer ist ein reader mit Logik 
 lexer::~lexer()
 {
 	int i = 0;
-	char* var  = name_of_vars[0];
-	while (var != 0) // freigeben der in "name_of_vars" referenzierten strings
+	char* current_var  = name_of_vars[0];
+	while (current_var != 0) // freigeben der in "name_of_vars" referenzierten strings
 	{
 		i++;
-		delete [] var;
-		var = name_of_vars[i];
+		delete [] current_var;
+		current_var = name_of_vars[i];
 	}
 	delete [] name_of_vars;
 }

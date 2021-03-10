@@ -7,7 +7,7 @@ EXECUTABLES = main
 all : main
 
 main: $(OBJECTS)
-	g++ $(OBJECTS) -o main -ggdb
+	g++ $(OBJECTS) -o main
 
 $(OBJECTS): $(SOURCES)
 	g++ $(SOURCES) -c
