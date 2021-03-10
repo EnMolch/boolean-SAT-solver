@@ -1,6 +1,12 @@
+// sehr simple Struktur für eine verkettete liste aus chars
+// wird als Grundlage für meherere Klassen verwendet.
+
+// Tim Heckenberger
+
 #include "linked_list.h"
 #include <iostream>
 #include <stdio.h>
+
 list *append(list* head, char data) //Anfügen an die verkettete Liste
 {
 	list* next = head;
@@ -19,7 +25,4 @@ void destruct_all(list* head)
 		delete current; 
 	}
 }
-
-
-
 

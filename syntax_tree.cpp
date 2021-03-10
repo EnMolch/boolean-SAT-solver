@@ -1,15 +1,22 @@
+// Der eigentliche Parser für die Sprache boolescher Ausdrücke, Endprodukt ist ein Syntaxbaum auf dem Heap
+// Tim Heckenberger
+
 #include "syntax_tree.h"
 #include "string_processing.h"
+#include <stdlib.h>	// für den Exit -call
 #include <iostream>
 
 interpreter::interpreter(int * all_tokens, char** all_variables, int number)
 {
-	tokens = all_tokens;
+
+	tokens = all_tokens;	// benötigt vorarbeit des Lexers
 	variables = all_variables;
 	number_of_variables = number;	
 	global_index =0;
 	number_distinct_variables = 0;
 
+
+	// berechnet wie viele verschiedene Variablen existieren
 	int increment=1;
 	for(int i = 0; i<number_of_variables;i++)
 	{
@@ -21,39 +28,43 @@ interpreter::interpreter(int * all_tokens, char** all_variables, int number)
 		number_distinct_variables += increment;
 		increment = 1;
 	}
-	convert_variable_to_name();
-	convert_name_to_value(); 
+
+	convert_variable_to_name();	// setze den index im Token-Array mit dem Namen in Verbindung
+	convert_name_to_value(); 	// Verbinde den Namen mit dem Index im Bitset
 }
 
-void interpreter::advance()
+void interpreter::step_foreward()
 {
 	if(tokens[global_index] != end_of_string)
 	{
-		global_index++;	
+	global_index++;		// inkrementiere den Index des momemtanen Tokens
 	}
 }
 
 tree* interpreter::elementary_truth_val()
 {
-// eine Variable, 0, oder 1
+	// Terminal der Grammatik -> 1, 0 oder eine Variable
+	// eine Variable, 0, oder 1
 	tree* ret;
 	switch(tokens[global_index])
 	{
+		// Konstriere die Passenden Bäume
+		// Baumstruktur: (Data, links, rechts), Data ist ein Terminal der Grammatik
 		case variable:
 			ret = new tree{get_bitset_index(global_index), 0, 0};
 			break;
 
 		case var_true:
-			ret = new tree{1, 0, 0};
+			ret = new tree{var_true, 0, 0};
 			break;
 
 		case var_false:
-			ret = new tree{0, 0, 0};
+			ret = new tree{var_false, 0, 0};
 			break;
 
 		case paren_open:
-			advance();
-			ret = expression();
+			step_foreward();	// in einer Klammer steht der allgemeinste Ausdruck
+			ret = or_expression();
 			if (tokens[global_index] != paren_close)
 			{
 				std::cout<< "Error Klammersetzung" << std::endl;
@@ -61,32 +72,34 @@ tree* interpreter::elementary_truth_val()
 
 			else 
 			{
-				advance();
+				step_foreward();
 				return ret;
 			}
 
 		default:
 			std::cout << "error" << std::endl;
+			exit(1);
 	}
 
-	advance();
+	step_foreward();
 	return ret;
 }
 
 
 tree* interpreter::truth_val()
 {
+	// ein Wahrheitswert ist ein elementarer Wert mit optionalen ! vorne
 	int count = 0;
 	while(tokens[global_index] == operator_not)
 	{
 		count++;	
-		advance();
+		step_foreward();
 	}
 	
 	if(!((count % 2) == 0))
 	{
 		tree* ret = new tree {operator_not, 0,0};
-		advance();
+		step_foreward();
 		ret->right = elementary_truth_val(); // sollte später expr callen
 		return ret;
 	}
@@ -94,30 +107,32 @@ tree* interpreter::truth_val()
 }
 
 
-tree* interpreter::term()
+tree* interpreter::and_term()
 {
-// ein term ist eine konjunktive verknüpfung von wahrheitswerten
-	
+	// ein and_term ist eine konjunktive verknüpfung von wahrheitswerten
 	tree* left = truth_val();
 	while(tokens[global_index] == operator_and)
 	{
 		int center = operator_and;
-		advance();
+		step_foreward();
 		tree* right = truth_val();
-		// ((A&B)&C) würde hier aus A&B&C , 
+		// ((A&B)&C) würde hier aus A&B&C
 		left = new tree{center, left, right};	
+		// der Trick, dass das alte "und" das linke Kind des neuen wird erlaubt das beliebige verschachteln
 	}
 	return left;
 }
 
-tree* interpreter::expression()
+tree* interpreter::or_expression()
 {
-	tree* left = term();
+	// die Or-Expression ist das allgemeinste Konstrukt, da or die geringste Priorität hat
+	// demnach ruft or_expression auch alle nichtterminale mit höherer Priorität auf
+	tree* left = and_term();
 	while(tokens[global_index] == operator_or)
 	{
 		int center = operator_or;
-		advance();
-		tree* right = term();
+		step_foreward();
+		tree* right = and_term();
 		left = new tree{center, left, right};
 	}
 	return left;
@@ -131,7 +146,8 @@ interpreter::~interpreter()
 
 tree* interpreter::parse_tokens()
 {
-	root = expression();
+	// Startsymbol ist die allgmeinste Form in der Grammatik: ein oder - Knoten
+	root = or_expression();
 	return root;
 }
 
@@ -214,12 +230,12 @@ int interpreter::find_first_entry(int index)
 
 int interpreter::first_instance(char* variable_name)
 {
-	// gib den index der ersten instanz zurück, falls nicht vorhanden gib -1 zurück
+	// gib den index der ersten instanz einer Variable zurück, falls nicht vorhanden gib -1 zurück
 	for (int i = 0; i<number_of_variables; i++)
 	{
 		if(string_processing::stringcompare(variables[i], variable_name)) return i;
 	}
-	return -1; 	// hierzu wird es nie kommen, falls aber ein fehler auftritt, lässt er sich hier erkennen
+	return -1; 	// Compilerwarnung unterdrücken, hierzu wird es aber aufgrund des Aufbaus nie kommen
 }
 
 

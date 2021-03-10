@@ -1,7 +1,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include "parser.h"
+#include "reader.h"
 #include "stack.h"
 #include "string_processing.h"
 // status soll auch für das restliche Programm verständlich sein
@@ -20,7 +20,7 @@ enum token_status {
 	end_of_string
 };
 
-class lexer: public parser
+class lexer: public reader	//
 {
 /*
  * Prüfen der korrekten Syntax und aufbauen einer internen Darstellung
@@ -55,6 +55,8 @@ class lexer: public parser
 		//getter
 		char** get_names();
 		int get_number_of_variables();
+
+
 /*Grammatik-Regeln des Lexers:
  * Nach einer ')' darf alles stehen -> kein lookahead nötig
  * Nach einer '(' darf alles außer ein binärer Operator oder eine ’)’ stehen

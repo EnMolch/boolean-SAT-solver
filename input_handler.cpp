@@ -1,6 +1,10 @@
+// Handlerfunktionen für die Kommandozeilenparameter
+// Tim Heckenberger
+
 #include "string_processing.h"
 #include<iostream>
 #include<fstream>
+#include <stdlib.h>
 #include "input_handler.h"
 const char* USAGE_STRING = "Usage:  ./main Equation | -f filepath | -h";
 
@@ -8,8 +12,6 @@ using namespace string_processing;
 
 int get_inputs(int count, char** values)
 {
-// handler für Kommandozeilenparameter
-
 	// gibt Flags für die Inputs zurück
 	if (count == 1 || count > 3)
 	{
@@ -28,7 +30,7 @@ int get_inputs(int count, char** values)
 			return FILE_INPUT;
 		}
 
-		else if(count == 2) //return the direct input only if there is 1 parameter
+		else if(count == 2) // bei einem Parameter liegt ein direkter Input vor
 		{
 			return DIRECT_INPUT;
 		}
@@ -44,11 +46,13 @@ char* get_direct_input(char** values)
 
 char* get_file_input(char** values)
 {
+	// Bei Dateieingabe wiird der String in der Datei zurückgegeben
 	std::ifstream input_file;
 	input_file.open(values[2], std::ifstream::ate); // öffne die Datei am Ende um die Länge herauszufinden
 	if(!input_file)
 	{
 		std::cout << "konnte Datei nicht öffnen!" << std::endl;
+		exit(1);
 		return 0;
 	}
 	int file_size = input_file.tellg(); // länge der Datei bestimmen

@@ -1,6 +1,6 @@
-#include "parser.h"
+#include "reader.h"
 
-char parser::peek_non_blanc()
+char reader::peek_non_blanc()
 {
 	int i = 1;
 	while(input[index + i] == ' ')
@@ -11,12 +11,12 @@ char parser::peek_non_blanc()
 }
 
 
-char parser::peek()
+char reader::peek()
 {
 	return input [index + 1];
 }
 
-char parser::get()
+char reader::get()
 {
 	char ret = input [index];
 	this->index++;

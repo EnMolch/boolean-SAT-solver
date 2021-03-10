@@ -1,4 +1,6 @@
-// main File, call the parser and be the entry point for the programm
+// Aufrufen der Klassen für die Datenverabeitung und Annehmen des Inputs
+// Tim Heckenberger TIT19
+
 #include "string_processing.h"
 #include "input_handler.h"
 #include "lexer.h"

@@ -1,5 +1,10 @@
+/*	Klasse zum Evaluieren und Ausgeben der Formel
+ *	Tim Heckenberger TIT19
+ */
+
 #include "evaluator.h"
 #include "lexer.h"
+#include <stdlib.h>
 #include <iostream>
 #include <iomanip>
 
@@ -11,11 +16,11 @@ evaluator::evaluator(tree* root, int distinct_vars, char** variable_names)
 	truth_value_counter = 0;
 }
 
-void evaluator::print_current_eval(int result)
+void evaluator::print_current_eval(int result, std::bitset<64> truth_values)
 {
 	// Ausgabe für einen Durchlauf des Syntaxbaumes mit einer bestimmten Belegung
 	
-	//std::cout << "-";
+	// Der versuch eine Semi-verständliche Tabelle im Terminal zu konstruieren
 	for(int i = 0; i<number_distinct_variables;i++)
 	{
 		std::cout << "---------";
@@ -26,7 +31,7 @@ void evaluator::print_current_eval(int result)
 	{
 		std::cout<<std::setw(9) << truth_values[i];
 	}
-	std::cout<<" " << std::setw(8)<<truth_values[number_distinct_variables-1] << " |";
+	std::cout<<" " << std::setw(8)<<truth_values[number_distinct_variables-1] << "|";
 	std::cout<<" " << "->" << result << std::endl;
 }
 
@@ -71,22 +76,78 @@ int evaluator::eval_node(tree* node) // rückgabewert ist der evaluierte Ausdruc
 
 void evaluator::fully_evaluate_tree(tree* node)
 {
+	if(number_distinct_variables > 63)	// ausnahmebehandlung zu viele Variablen
+	{
+		std::cout<<"es sind nur 63 Variablen maximal erlaubt!"<< std::endl;
+		exit(1);
+	}
+
 	int maximum_counter_value = 1 << number_distinct_variables;
+	
 	for (int i = 0; i<number_distinct_variables;i++)
 	{
 		std::cout<<std::setw(8) <<variables[i]<<"|";
 	}
-	std::cout<<std::endl;
 
-	while(truth_value_counter < maximum_counter_value)
+	std::cout<<std::endl;
+	if(number_distinct_variables < 10)
 	{
-		this->truth_values = std::bitset <64>(truth_value_counter);
-		print_current_eval(eval_node(root));
-		truth_value_counter++;	// hochzählen geht nacheinander alle möglichen Kombinationen der Variablen durch
+		while(truth_value_counter < maximum_counter_value)
+		{
+			this->truth_values = std::bitset <64>(truth_value_counter);
+			print_current_eval(eval_node(root), truth_values);
+			truth_value_counter++;	// hochzählen geht nacheinander alle möglichen Kombinationen der Variablen durch
+		}
+		std::cout << "- ";
+		for(int i = 0; i<number_distinct_variables;i++)
+		{
+			std::cout << "---------";
+		}
 	}
-	std::cout << "- ";
-	for(int i = 0; i<number_distinct_variables;i++)
+	else
 	{
-		std::cout << "---------";
+		int false_flag = 0;	// flags und belegungen für bestimmte Ergebnisse
+		std::bitset<64> false_vars;
+
+		int true_flag = 0;
+		std::bitset<64> true_vars;
+
+		while(truth_value_counter < maximum_counter_value && ((false_flag && true_flag) == 0))
+		{
+			this->truth_values = std::bitset<64>(truth_value_counter);
+			if(eval_node(root) == 1)
+			{
+				true_flag = 1;
+				true_vars = std::bitset<64>(truth_value_counter);
+			}
+			else
+			{
+				false_flag = 1;
+				false_vars = std::bitset<64>(truth_value_counter);
+			}
+			truth_value_counter++;
+		}
+		// Gebe jeweils eine Belegung aus , falls für etwas keine Belegung existiert, gebe diesen Fakt aus
+		
+		if(true_flag == 0)
+		{
+			std::cout<<"keine Belegung für Wahr gefunden! Wiederspruch" <<std::endl;
+			print_current_eval(0, false_vars);
+		}
+		else if(false_flag == 0)
+		{
+			std::cout<<"Keine Belegung für Falsch gefunden! Tautologie" << std::endl;
+			print_current_eval(1, true_vars);
+		}
+
+		
+		else	// sonst gebe beide Belegungen aus
+		{
+			print_current_eval(0,false_vars);
+			print_current_eval(1,true_vars);
+		}
+		
+
 	}
+	
 }

@@ -1,6 +1,7 @@
 #ifndef STRING_PROCESSING_H
 #define STRING_PROCESSING_H
 // Ich weiss, dass string.h existiert, zum lernen mache ich es hier aber slebst
+// Tim Heckenberger
 
 #include "linked_list.h" //für die verkettete Liste
 

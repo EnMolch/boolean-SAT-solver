@@ -1,17 +1,18 @@
 // Das ist ein Lexer. Er rekonstruiert eine programminterne Darstellung der eingegebenen Formel. Diese wird zur Evaluirung benutzt
+// Tim Heckenberger
 #include "lexer.h"
 #include "stack.h"
 #include "string_processing.h"
 #include <iostream>
 
-lexer::lexer(const char* str):parser(str)
+lexer::lexer(const char* str):reader(str)	// der Lexer ist ein reader mit Logik für jedes Zeichen
 {
 	stack tracker;
 	string var;
 	var_counter = 0;
 	max_size = string_processing::strlen(str);
 	name_of_vars = new char* [max_size]; 
-	lexemes = new int [max_size];
+	lexemes = new int [max_size]; // tokens sind mit integern codiert
 }
 
 lexer::~lexer()
@@ -31,7 +32,7 @@ char** lexer::get_names(){return name_of_vars;}
 
 int lexer::validate_parens()
 {
-	// TODO wäre vielleicht effizienter eine Variable zu inc/decrementieren statt nen ganzen Stack aufzubauen
+	// benutzt einen Stack für das Prüfen der Klammersetzung
 	char current = 'A'; // inititalisierung kann alles außer 0 sein
 	char stop_flag = 1;
 	while (current != 0 && stop_flag == 1 )// iteriere durch die ganze Eingabe
@@ -68,6 +69,7 @@ int lexer::validate_op(char test)
 
 int lexer::validate_var(char test)
 {
+	// Zeichen, die auf eine Variable folgen
 	return ( (test == ')') || (test == '&') || (test == '|') | (test == '\0') | (test == 10));
 }
 
@@ -79,18 +81,20 @@ int lexer::is_ascii_letter(char test)
 
 int lexer::validate_start(char test)
 {
+	// Zeichen, die am Anfang stehen dürfen
 	return (is_ascii_letter(test) || test == '!' || test =='(' || test == '0' || test == '1');
 }
 
 
 int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls das Variablenverzeichniss
 {
-/*	Iteriert einen Character nacheinander den String, außer bei variablen, diese werden direkt konsumiert.
+/*	Iteriert chracter für character den String, außer bei variablen, diese werden direkt konsumiert.
  *	alles andere kann durch den Status - Code identifiziert werden.
  * */	
 	char next_char = peek(); // nächstes Zeichen auf dem Input
 	char next_value = peek_non_blanc(); // nächstes nicht whitespace- Zeichen
 	char current_value = get(); 	// jetziges Zeichen
+
 	// Alle Fälle durchgehen und passende Codes zurückgeben
 	
 
@@ -104,11 +108,10 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 		if(!(is_ascii_letter(current_value) || current_value == ')' || current_value == '1' || current_value == '0'|| current_value==10)) return error;
 	}
 
-	if (current_value != 0 && current_value != 10)
+	if (current_value != 0 && current_value != 10) // 0 und 10 sind ascii-codes für das Ende von Strings
 	{	
 		switch (current_value)
 		{
-			// TODO eventuell schönere Error codes, also Syntax, illegal char, ...
 
 			case '(':  // danach darf alles außer ein binärer Operator stehen
 				// konstrukte wie () () () (!1 & A) müssen entfernt werden
@@ -141,8 +144,6 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 			case ' ':
 				return (lex()); // leerzeichen werden übersprungen
 			
-			case 0xa:
-				return (lex()); // newline wird ebenfalls übersprungen
 			case 9:
 				return (lex()); // Tablulator wird auch übersprungen
 
@@ -158,7 +159,8 @@ int lexer::lex() // gebe einen Code zurück und verfolständige gegebenenfalls d
 						char following_char = get();
 						var.append(following_char);
 					}
-					if (validate_var(next_value))
+
+					if (validate_var(next_value)) // darf nur konsumieren, wenn die Grammatik stimmt
 					{
 						name_of_vars[var_counter] = var.convert(); 
 						var_counter++; // index für die nächste Variable
@@ -180,6 +182,7 @@ int lexer::get_number_of_variables() {return var_counter;}
 
 int* lexer::lex_completely()
 {
+	// iteriere durch alle Zeichen und appliziere den Lexer
 	int status = 1;
 	int position = 0;	// position der Tokens im array
 	while (status != error && status != end_of_string)
@@ -191,7 +194,10 @@ int* lexer::lex_completely()
 
 	if(status == error) 
 	{
+		// räume im Fehlerfall auf und beende das Programm
 		delete [] lexemes;
+		std::cout << "Syntaxfehler!" << std::endl;
+		exit(1);
 		return 0;
 	}
 

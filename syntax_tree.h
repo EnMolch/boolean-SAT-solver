@@ -1,12 +1,12 @@
 #ifndef __SYNTAX__TREE_H
 #define __SYNTAX__TREE_H
 
-
-#define DIR_LEFT 0
-#define DIR_RIGHT 1
+// Baumstruktur und Interpreter-Klasse für das Implementieren der Grammatik und Konstruktion des Syntaxbaumes
 
 #include "lexer.h"
 #include <map>
+
+// elemntare Baumstruktur
 struct tree
 {
 	int data;
@@ -14,12 +14,6 @@ struct tree
 	tree* right;
 };
 
-enum exceptions
-{
-	variable_exception,
-	term_exception,
-	expression_exception
-};
 // Ansatz des Implementierens einer Grammatik
 class interpreter
 {
@@ -28,8 +22,7 @@ class interpreter
 		char** variables;
 		int number_of_variables;
 		int number_distinct_variables;
-		int last_relevant_token;
-		int global_index;
+		int global_index;	// index des momentanen Tokens
 		std::map<int, int> variable_to_name; // index der variable zum index in namen
 		std::map<int, int> name_to_value; // index in namen zu position im bitset
 		tree* root;
@@ -38,22 +31,26 @@ class interpreter
 		interpreter(int * all_tokens, char** all_variables, int number); // nimm tokens und variablen
 		~interpreter();
 
+
+		// Grammatik-Methoden
+
 		tree* elementary_truth_val();
 		tree* truth_val();
-		tree* term();
-		tree* expression();
+		tree* and_term();
+		tree* or_expression();
 		tree* parse_tokens();
-
+		void step_foreward();
+		
+		// variablen-Namensauflösung
 		void convert_variable_to_name();
 		void convert_name_to_value();
-
-		int remove_branch(tree* node);
-		int get_bitset_index(int index);
 		int get_distinct_vars();
 		int find_first_entry(int index);
 		int first_instance(char* variable_name);
+		int get_bitset_index(int index);
 
-		void advance();
+		// entfernen ab einem bestimmten Knoten
+		int remove_branch(tree* node);
 };
 
 

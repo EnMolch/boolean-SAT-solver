@@ -1,3 +1,6 @@
+// Ein stapelspeicher für das Prüfen der Klammersetzung als Kellerautomat auf Basis einer simplen verketteten Liste
+// Tim Heckenberger
+
 #include "stack.h"
 #include "linked_list.h"
 #include <iostream>
@@ -16,6 +19,7 @@ stack::~stack()
 
 char stack::push(char value)
 {
+	// lege etwas oben auf den Stack
 	this->top = append(this->top, value);
 	this->stack_size++;
 	return value;
@@ -23,6 +27,7 @@ char stack::push(char value)
 
 char stack::pop()
 {
+	// entferne das Obere Element und gib das entfernte Zeichen zurück
 	if (this->stack_size >0)
 	{
 		list* upper = this->top;
