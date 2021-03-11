@@ -7,8 +7,6 @@
 
 lexer::lexer(const char* str):reader(str)	// der Lexer ist ein reader mit Logik für jedes Zeichen
 {
-	stack tracker;
-	string var;
 	var_counter = 0;
 	max_size = string_processing::strlen(str);
 	name_of_vars = new char* [max_size]; 

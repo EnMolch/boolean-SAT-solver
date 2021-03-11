@@ -76,9 +76,9 @@ int evaluator::eval_node(tree* node) // rückgabewert ist der evaluierte Ausdruc
 
 void evaluator::fully_evaluate_tree(tree* node)
 {
-	if(number_distinct_variables > 63)	// ausnahmebehandlung zu viele Variablen
+	if(number_distinct_variables > 64)	// ausnahmebehandlung zu viele Variablen
 	{
-		std::cout<<"es sind nur 63 Variablen maximal erlaubt!"<< std::endl;
+		std::cout<<"es sind nur 64 Variablen maximal erlaubt!"<< std::endl;
 		exit(1);
 	}
 

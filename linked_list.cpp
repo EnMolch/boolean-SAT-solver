@@ -1,5 +1,5 @@
 // sehr simple Struktur für eine verkettete liste aus chars
-// wird als Grundlage für meherere Klassen verwendet.
+// wird als Grundlage für mehrere Klassen verwendet.
 
 // Tim Heckenberger
 

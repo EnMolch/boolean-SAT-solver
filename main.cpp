@@ -34,17 +34,18 @@ int handle_equation(char* equation)
 int main(int argc, char* argv[])
 {
 	int status_code = get_inputs(argc, argv);
+	char* input;
 	switch (status_code)
 	{
 		case NO_INPUT:
 			return 0;
 
 		case DIRECT_INPUT:
-			return handle_equation(argv[1]);
+			input = argv[1];
+			return handle_equation(input);
 
 		case FILE_INPUT:
-			// TODO nicht vergessen, am Ende den input zu DELETEN!
-			char* input = get_file_input(argv);
+			input = get_file_input(argv);
 			int status = handle_equation(input);
 			delete [] input;
 			return status;

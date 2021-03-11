@@ -3,6 +3,7 @@
 // Tim Heckenberger
 
 #include <cstddef>
+#include <iostream>
 #include "string_processing.h"
 #include "linked_list.h"
 

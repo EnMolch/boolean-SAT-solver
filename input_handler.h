@@ -6,7 +6,6 @@
 #define FILE_INPUT 2
 
 int get_inputs(int count, char** values);
-char* get_direct_input(char** values);
 char* get_file_input(char** values);
 
 #endif

@@ -37,7 +37,7 @@ void interpreter::step_foreward()
 {
 	if(tokens[global_index] != end_of_string)
 	{
-	global_index++;		// inkrementiere den Index des momemtanen Tokens
+		global_index++;		// inkrementiere den Index des momemtanen Tokens
 	}
 }
 
@@ -98,8 +98,7 @@ tree* interpreter::truth_val()
 	
 	if(!((count % 2) == 0))
 	{
-		tree* ret = new tree {operator_not, 0,0};
-		ret->right = elementary_truth_val(); // sollte später expr callen
+		tree* ret = new tree {operator_not, 0,elementary_truth_val()};
 		return ret;
 	}
 	return elementary_truth_val();	
@@ -206,7 +205,7 @@ int interpreter::remove_branch(tree* node)
 	{
 		remove_branch(node->right);
 	}
-	delete [] node;
+	delete node;
 	return 0;
 }
 

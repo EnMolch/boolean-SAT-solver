@@ -39,11 +39,6 @@ int get_inputs(int count, char** values)
 	}
 }
 
-char* get_direct_input(char** values)
-{
-	return values[1];	
-}
-
 char* get_file_input(char** values)
 {
 	// Bei Dateieingabe wiird der String in der Datei zurückgegeben

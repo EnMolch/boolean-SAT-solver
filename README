@@ -3,16 +3,18 @@ lexen, parsen und durchprobieren
 
 Ausgabe als wahrheitstabelle und einfache ausgabe im Falle des SAT
 
+Bauen der Software: Keine äußeren Abhängikeiten außer libc, einfach make im Verzeichnis außführen.
+
 
 USAGE:
 	Kommandozeile : da | und & vorkommen wird empfohlen, so etwas wie folgendes Konstrukt zu verwenden:
 
-	EQUATION='!(A|B)&C|D'
+	EQUATION='B&C|D'
 	./main $EQUATION
 
 
 	oder direkt mit:
-	./main '!(A|B)&C|D'
+	./main 'B&C|D'
 
 	für Dateien:
 	
@@ -31,9 +33,9 @@ Operatoren:
 
 Parser-Grammatik:
 
-	elementarer_bool = 0|1|var|(expr)
+	elementarer_bool = 0|1|var|(expression)
 	bool = !* elementarer_bool
 	term = bool (& bool)*
 	expression = term (| term)*
 
-Diese Grammitik beschreibt die Konstruktionsregeln vollständig, Implementierung ist in der Klasse Interpreter in syntax_tree.cpp.
+Diese Grammitik beschreibt die Konstruktionsregeln vollständig, Implementierung ist in der Klasse interpreter in syntax_tree.cpp.
